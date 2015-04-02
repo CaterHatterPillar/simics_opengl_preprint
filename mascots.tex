@@ -1,8 +1,5 @@
 \documentclass{article}
 
-\usepackage{graphicx} % Displaying pdf graphics.
-\usepackage{multirow} % Used for specialized tables (multirow).
-
 \begin{document}
 
 \title{Accelerating Graphics in the Simics Full-system Simulator}
@@ -107,19 +104,5 @@ Induced benefits are performance improvements of up to $34$ times -- or two orde
 Magic instruction overhead is identified as the main performance bottleneck.
 As such, a drawback of graphics paravirtualization is a weakness to large amounts of framework invocations.
 Thus, this paper claims paravirtualization as a successful formula for system simulator graphics acceleration, and suggests utilizing high-level paravirtualization to accelerate graphics in virtual platforms.
-
-\begin{figure}
-\centering
-\includegraphics[width=\linewidth]{img/yedoverview.pdf}
-\caption{Overview of paravirtualized graphics in Simics.}
-\label{fig:overview}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=\linewidth]{img/yedvirtualmemory.pdf}
-\caption{Simics Pipe overview. The target system libraries gives a virtual memory address to the host system libraries, which inquiries the target MMU in order to retrieve the byte stream from target physical memory.}
-\label{fig:virtualmemory}
-\end{figure}
 
 \end{document}
