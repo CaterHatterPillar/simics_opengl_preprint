@@ -13,8 +13,6 @@
 % Compact lists (see enumitem):
 \setitemize{noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt}
 
-\newcommand{\masccite}[2][]{\cite{#2}}
-\newcommand{\masccodeinline}[1]{\colorbox{black!5}{\lstinline[basicstyle=\ttfamily\color{black}]{#1}}}
 \newread\file
 \newcommand{\mascfirstline}[1]{\input{#1}\unskip}
 
@@ -50,7 +48,7 @@ The host system libraries subsequently interprets the recieved byte stream, and 
 When the OpenGL invocation has been performed, any function results are returned to the target system.
 
 Communications between target and host system libraries are performed using magic instructions.
-Magic instructions are \masccodeinline{nop}-type instructions that, when executed on the simulated hardware in a virtual platform, invokes a callback-method in the simulation host~\masccite[p.~32]{publications:leupers:2010}.
+Magic instructions are nop-type instructions that, when executed on the simulated hardware in a virtual platform, invokes a callback-method in the simulation host.
 During such an instruction, transmit a memory address in a 64 bit register -- the starting address of the serialized command stream.
 Having successfully escaped the simulation context, we may assume the presence of a target virtual address in said CPU register and translate the given virtual address using the target system MMU.
 This physical address can, in turn, be used to locate the given area in the simulated RAM image, thereby allowing direct access by the simulation host into the entire target memory page.
@@ -104,7 +102,7 @@ As such, we have accelerated graphics by up to $34$ times, reducing frame time f
 For platforms that cannot utilize hardware-assisted virtualization, paravirtualization is estimated to obtain an additional order of magnitude in frame time reduction, in comparison to software rasterization.
 Such scenarios may include simulating other platforms than x86, such as PowerPC, or when utilizing certain advanced features in Simics -- e.g. breakpoints.
 
-Accordingly, this experiment has identified the potential of using paravirtualization with shared memory for the means of accelerating graphics to that of real-time performance, testimonial to the results presented by Lagar-Cavilla et al. in their work on using paravirtualization to accelerate graphics~\masccite{inproceedings:lagarcavilla:2007}.
+Accordingly, this experiment has identified the potential of using paravirtualization with shared memory for the means of accelerating graphics to that of real-time performance, testimonial to the results presented by Lagar-Cavilla et al. in their work on using paravirtualization to accelerate graphics.
 Additionally, results indicate performance improvements in terms of maximum frame times, inducing significantly improved standard deviation.
 In line with stable frame rates being prerequisites for real-time applications, this further indicates, in coagency with reduced frame times, the feasibility of utilizing paravirtualized methodology for the purposes of accelerating graphics within virtual platforms.
 
