@@ -43,48 +43,27 @@ Furthermore, magic instructions are identified as the primary bottleneck of comm
 
 \noindent\rule{8cm}{0.4pt}
 
-Paravirtualized graphics acceleration is achieved through three overall components (see figure...).
-The target system libraries implement the EGL and OpenGL~ES APIs and lures whatever application it is being linked to that it is, in fact, the expected platform libraries.
+Paravirtualized graphics acceleration is achieved through three overall components (see figure \ref{fig:overview}).
+The target system libraries implement the EGL and OpenGL APIs and lures whatever application it is being linked to that it is, in fact, the expected platform libraries.
 However, instead of communicating with the platform windowing system (in terms of EGL) and the graphics device (in terms of OpenGL), the target system libraries serialize the given command stream and forward it to the simulation host.
+The host system libraries subsequently interprets the recieved byte stream, and performs the concerned OpenGL functions.
+When the OpenGL invocation has been performed, any function results are returned to the target system.
 
-In collaboration with the target system libraries, the host system libraries decodes and interprets the received byte stream.
-The host system libraries subsequently performs the concerned OpenGL functions relayed by the target system libraries.
-When a requested OpenGL invocation has been performed, any function results are returned to the target system.
-
-The Simics pipe constitutes the target-to-host communications channel in Simics.
-As such, it is responsible for transferring a serialized command stream between the target and host system libraries.
-To do this, the Simics pipe requires a way to exchange information with the simulation host.
-
-Magic instructions denotes \masccodeinline{nop}-type instructions, meaning instructions that would have no effect if run on the target architecture (such as \masccodeinline{xchg ebx, ebx} on x86-compatible architectures).
-When executed on the simulated hardware in a virtual platform, it invokes a callback-method in the simulation host~\masccite[p.~32]{publications:leupers:2010}.
-
-During a magic instruction, we may utilize any available registers; the number and size of registers is the data-sharing bottleneck of this method.
-Thus, we utilize a 64-bit register to transmit a lone memory address -- the starting address of the serialized command stream.
-Having successfully escaped the simulation context, we may assume the presence of a target virtual address in the agreed-upon CPU register.
-
-The simulation host can access the MMU of the target system to translate a target virtual address to a physical one.
+Communications between target and host system libraries are performed using magic instructions.
+Magic instructions are \masccodeinline{nop}-type instructions that, when executed on the simulated hardware in a virtual platform, invokes a callback-method in the simulation host~\masccite[p.~32]{publications:leupers:2010}.
+During such an instruction, transmit a memory address in a 64 bit register -- the starting address of the serialized command stream.
+Having successfully escaped the simulation context, we may assume the presence of a target virtual address in said CPU register and translate the given virtual address using the target system MMU.
 This physical address can, in turn, be used to locate the given area in the simulated RAM image, thereby allowing direct access by the simulation host into the entire target memory page.
 
-The experiments are performed in software rasterized and paravirtualized Simics platforms.
-The results are then compared to reference runs on the host system.
-Simics is configured to simulate an Intel\circledR ~Core\texttrademark ~i7 processor and an Intel\circledR ~X58 chipset.
-During simulation, hardware-assisted virtualization is used to accelerate the simulation by running target x86 instructions natively on the host hardware.
-The simulation systems are, like the host system, set up to run Fedora~$19$ Linux and use the Mesa llvmpipe driver~\masccite{web:mesa:2015} for software rasterization.
-
-The experiments are performed on a system with the following specifications:
-\begin{itemize}
-\item Intel\circledR\ Core\texttrademark\ i7-4770HQ
-\item Intel\circledR\ Iris\texttrademark\ Pro Graphics 5200
-\end{itemize}
-
-Each benchmark is intended to stress one suspected bottleneck in the implementation: one benchmark performs a large number of relatively insignificant OpenGL invocations, while the other has a computationally intensive workload.
+To evaluate the implementation, two benchmarks are devised.
+These benchmarks stress suspected bottleneck in the implementation: one benchmark performs a large number of relatively insignificant OpenGL invocations, while the other has a computationally intensive workload.
 As such, the benchmarks should be representative of typical scenarios induced by modern applications using OpenGL, such as responsive UIs.
 
-During the experiments, the elapsed times of $1000$ frames is measured for each benchmark.
-In order to gain some understanding on how well the given performance scales, we run three instances of each benchmark.
+During the experiments, the elapsed times of $1000$ frames is measured for each benchmark in software rasterized and paravirtualized Simics platforms, utilizing hardware-assisted virtualization so speed up simulation.
+In order to gain some understanding on how well the given performance scales, we run three instances of each benchmark with different input.
+Paravirtualized results are then compared with software rasterization.
 
 Results accumulated from software rasterized and paravirtualized execution in Simics are presented in Tables~\ref{tab:keyvalsimics}~and~\ref{tab:keyvalpara}.
-In Figure~\ref{fig:histogramssimicsparachess}~and~\ref{fig:histogramssimicsparajulia}, the results are presented as histograms, visualizing elapsed time in milliseconds to sample density.
 
 The Chess benchmark is designed to locate any bottlenecks related to the number of paravirtualized invocations, which is a predicted bottleneck.
 Evidently, the prediction of a target-to-host communication latency issue has been confirmed, arguably identifying one weakness of graphics paravirtualization in the Simics full-system simulator.
@@ -113,8 +92,6 @@ Thus, the impact magic instructions have on performance is reduced when hardware
 
 We may conclude that some workloads (Chess) may attain decent simulation performance when software rasterized simply because of a fast simulator.
 When native execution is not available, neither JIT compilation or interpretation can gain the same speeds as paravirtualization.
-
-The results collected without hardware-assisted virtualization are not presented in detail in this paper, since the focus of this paper is platforms where hardware acceleration is available.
 
 In Section \ref{sec:results}, we establish strengths and weaknesses of paravirtualized graphics in the Simics full-system simulator; most notably, the bottleneck introduced by magic instruction overhead.
 As such, we confirm original suspicions through the use of the described benchmarks.
@@ -205,16 +182,5 @@ Thus, this paper claims paravirtualization as a successful formula for system si
     \label{tab:keyvalpara}
   }
 \end{table*}
-
-\begin{figure*}
-  \centering
-  \input{gnuhistogramssimicsparachess.tex}
-  \caption{Histograms depicting the sample density of $1000$ elapsed frames of the Chess benchmark subdivided into $100$ bins. The measurements are presented in milliseconds.}
-  \label{fig:histogramssimicsparachess}
-
-  \input{gnuhistogramssimicsparajulia.tex}
-  \caption{Histograms depicting the sample density of $1000$ elapsed frames of the Julia benchmark subdivided into $100$ bins. The measurements are presented in milliseconds.}
-  \label{fig:histogramssimicsparajulia}
-\end{figure*}
 
 \end{document}
