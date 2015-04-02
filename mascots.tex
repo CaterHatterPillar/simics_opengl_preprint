@@ -53,7 +53,7 @@ Paravirtualized results are then compared with software rasterization.
 
 \noindent\rule{8cm}{0.4pt}
 
-Results accumulated from software rasterized and paravirtualized execution in Simics are presented in Tables~\ref{tab:keyvalsimics}~and~\ref{tab:keyvalpara}.
+Results accumulated from software rasterized and paravirtualized execution in Simics are presented in Tables \ref{tab:keyvalsimics} and \ref{tab:keyvalpara}.
 
 The Chess benchmark is designed to locate any bottlenecks related to the number of paravirtualized invocations, which is a predicted bottleneck.
 Evidently, the prediction of a target-to-host communication latency issue has been confirmed, arguably identifying one weakness of graphics paravirtualization in the Simics full-system simulator.
@@ -63,7 +63,7 @@ This affects the performance by forcing the simulation to no longer be executed 
 It also entails Simics no longer being able to utilize just-in-time compilation to speed up execution, forcing the simulator to rely on regular code interpretation.
 As such, in great numbers, magic instructions may greatly affect performance.
 In order to establish what those overhead costs may be, further study into this matter is performed by measuring the elapsed time of escaping simulation $1000$ times using magic instructions.
-From these findings, we may conclude that $1000$ consecutive magic instructions induce an average overhead of roughly $5$~ms, minus profiling cost.
+From these findings, we may conclude that $1000$ consecutive magic instructions induce an average overhead of roughly $5$ ms, minus profiling cost.
 These findings indicate that magic instruction overhead could account for the majority of elapsed frame times when paravirtualized in Simics.
 
 The Julia benchmark is incorporated into the experiment to establish how the paravirtualized solution performed under computational stress, which is where benefits induced by hardware acceleration should be made apparent.
@@ -88,7 +88,7 @@ As such, we confirm original suspicions through the use of the described benchma
 Thus, this study identifies the performance bottleneck inherent in great numbers of paravirtualized function invocations.
 
 Furthermore, compiled results showcase great improvements for computationally intensive graphics, as demonstrated by the Julia fractal benchmark, compared to its software rasterized Simics counterpart.
-As such, we have accelerated graphics by up to $34$ times, reducing frame time from that of $1415$~ms to the real-time feasible count of 42~ms; a frame time of 42~ms roughly correspond to 24 frames per second.
+As such, we have accelerated graphics by up to $34$ times, reducing frame time from that of $1415$ ms to the real-time feasible count of 42 ms; a frame time of 42 ms roughly correspond to 24 frames per second.
 For platforms that cannot utilize hardware-assisted virtualization, paravirtualization is estimated to obtain an additional order of magnitude in frame time reduction, in comparison to software rasterization.
 Such scenarios may include simulating other platforms than x86, such as PowerPC, or when utilizing certain advanced features in Simics -- e.g. breakpoints.
 
